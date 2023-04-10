@@ -174,6 +174,7 @@ def train():
     )
     model = get_peft_model(model, lora_config)
     print_trainable_parameters(model)
+    model.print_trainable_parameters()
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
@@ -182,11 +183,11 @@ def train():
         use_fast=False,
     )
 
-
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
     trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
     trainer.train()
     model.save_pretrained(save_directory=training_args.output_dir)
+
     # trainer.save_state()
     # safe_save_model_for_hf_trainer(trainer=trainer, output_dir=training_args.output_dir)
 
